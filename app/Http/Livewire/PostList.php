@@ -13,7 +13,7 @@ class PostList extends Component
     public $sort = 'desc';
     public $cari = '';
 
-    protected $listeners = ['updatedCari']; // List event yang ditangkap (Livewire V 2.x)
+    protected $listeners = ['updatedCari', 'cariPost']; // List event yang ditangkap (Livewire V 2.x)
 
     public function setSort($sort)
     {
@@ -22,6 +22,12 @@ class PostList extends Component
     }
 
     public function updatedCari($cari)
+    {
+        $this->cari = $cari;
+        $this->resetPage();
+    }
+
+    public function cariPost($cari)
     {
         $this->cari = $cari;
         $this->resetPage();

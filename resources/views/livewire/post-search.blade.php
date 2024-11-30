@@ -1,4 +1,6 @@
-<div id="search-box">
+<div x-data="{
+    keyword : '{{ request('cari', '') }}'
+}" id="search-box">
     <div>
         <h3 class="text-lg font-semibold text-gray-900 mb-3">Pencarian</h3>
         <div class="w-52 flex rounded-2xl bg-gray-100 py-2 px-3 mb-3 items-center">
@@ -9,12 +11,13 @@
                 </svg>
             </span>
             <input
-                wire:model.live.debounce.300ms="cari"
+                x-model="keyword"
+                x-on:input="$wire.set('cari', keyword)"
                 class="w-40 ml-1 bg-transparent focus:outline-none focus:border-none focus:ring-0 outline-none border-none text-xs text-gray-800 placeholder:text-gray-400"
                 type="text" placeholder="Cari Topik">
 
             </div>
 
-            <x-button wire:click="cariPost()"> Cari </x-button>
+            <x-button x-on:click="$wire.emit('cariPost', keyword)"> Cari </x-button>
     </div>
 </div>
