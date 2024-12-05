@@ -4,12 +4,12 @@
     <div class="article-body grid grid-cols-12 gap-3 mt-5 items-start">
         <div class="article-thumbnail col-span-4 flex items-center">
             <a href="">
-                <img class="mw-100 mx-auto rounded-xl" src="{{ $item->image }}" alt="thumbnail">
+                <img class="mw-100 mx-auto rounded-xl" src="{{ $item->getThumbnailImage() }}" alt="thumbnail">
             </a>
         </div>
         <div class="col-span-8">
             <div class="article-meta flex py-1 text-sm items-center">
-                <img class="w-7 h-7 rounded-full mr-3" src="{{ $item->penulis->profile_photo_url }}" alt="{{ $item->penulis->name }}">
+                <img class="w-7 h-7 rounded-full mr-3" src="{{ $item->getProfilePicture() }}" alt="{{ $item->penulis->name }}">
                 <span class="mr-1 text-xs">{{ $item->penulis->name }}</span>
                 <span class="text-gray-500 text-xs">. {{ $item->published_at->diffForHumans() }}</span>
             </div>
@@ -23,8 +23,20 @@
                 {{ $item->getPreviewContent() }}
             </p>
             <div class="article-actions-bar mt-6 flex items-center justify-between">
-                <div class="flex items-center space-x-4">
-                    <span class="text-gray-500 text-sm">{{ $item->getWaktuBaca() }} min baca</span>
+                <div class="flex gap-x-2">
+                    @if(!empty($item->categories))
+                        @foreach ($item->categories as $category)
+                            <x-tags
+                            wire:navigate href="{{ route('blog.index', ['category' => $category->slug]) }}"
+                            :textColor="$category->text_color" :bgColor="$category->bg_color">
+                                {{ $category->title }}
+                            </x-tags>
+                        @endforeach
+                    @endif
+
+                    <div class="flex items-center space-x-4">
+                        <span class="text-gray-500 text-sm">{{ $item->getWaktuBaca() }} min baca</span>
+                    </div>
                 </div>
                 <div>
                     <a class="flex items-center">

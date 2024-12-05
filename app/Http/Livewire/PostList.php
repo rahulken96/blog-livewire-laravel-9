@@ -4,6 +4,7 @@ namespace App\Http\Livewire;
 
 use App\Models\Post;
 use Livewire\Component;
+use App\Models\Category;
 use Livewire\WithPagination;
 
 class PostList extends Component
@@ -12,8 +13,9 @@ class PostList extends Component
 
     public $sort = 'desc';
     public $cari = '';
+    public $category = '';
 
-    protected $listeners = ['updatedCari', 'cariPost']; // List event yang ditangkap (Livewire V 2.x)
+    protected $listeners = ['updatedCari', 'cariPost', 'activeCategory']; // List event yang ditangkap (Livewire V 2.x)
 
     public function setSort($sort)
     {
@@ -24,6 +26,13 @@ class PostList extends Component
     public function updatedCari($cari)
     {
         $this->cari = $cari;
+        $this->resetPage();
+    }
+
+    public function clearFilters()
+    {
+        $this->cari = '';
+        $this->category = '';
         $this->resetPage();
     }
 
@@ -39,8 +48,16 @@ class PostList extends Component
 
         return Post::published()
         ->where('title', 'like', "%{$this->cari}%")
+        ->when($this->activeCategory, function ($query) {
+            $query->withCategory($this->category);
+        })
         ->orderBy('published_at', $this->sort)
         ->paginate(5);
+    }
+
+    public function getActiveCategoryProperty()
+    {
+        return Category::where('slug', $this->category)->first();
     }
 
     public function render()
